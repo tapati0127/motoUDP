@@ -162,7 +162,29 @@ QByteArray* MotoUDP::MotoUDP::Get_rx_buffer()
 {
     return rx_buffer;
 }
-
+MotoUDP::MotoUDP::RECEIVE_TYPE MotoUDP::MotoUDP::GetReceiveType (QByteArray buffer)
+{
+    return RECEIVE_TYPE(buffer.at(11));
+}
+bool MotoUDP::MotoUDP::CheckReceivedData(QByteArray buffer)
+{
+    QByteArray abuffer;
+    bool check_number_data, check_header_1, check_header_2, check_header_3 ;
+    abuffer = SplitArray(buffer,6,2);
+    check_number_data = ByteArray2Int32(&abuffer,0,2)==Get_rx_buffer()->size()-32;
+    check_header_1 = ByteArray2Hex(SplitArray(buffer,0,6)) == "59 45 52 43 20 00 ";
+    check_header_2 = ByteArray2Hex(SplitArray(buffer,8,3)) == "03 01 01 ";
+    check_header_3 = ByteArray2Hex(SplitArray(buffer,12,12)) == "00 00 00 80 39 39 39 39 39 39 39 39 ";
+    return  check_number_data&&check_header_1&&check_header_2&&check_header_3;
+}
+QByteArray MotoUDP::MotoUDP::SplitArray(QByteArray array,int start, int count)
+{
+    QByteArray temp_array;
+    for (int i = start;i<start+count;i++) {
+        temp_array.push_back(array.at(i));
+    }
+    return temp_array;
+}
 const QString MotoUDP::MotoUDP::ON_SERVO_CMD =  "59 45 52 43 20 00 04 00 03 01 00 00 00 00 00 00 39 39 39 39 39 39 39 39 83 00 02 00 01 10 00 00 01 00 00 00";
 const QString MotoUDP::MotoUDP::OFF_SERVO_CMD = "59 45 52 43 20 00 04 00 03 01 00 01 00 00 00 00 39 39 39 39 39 39 39 39 83 00 02 00 01 10 00 00 02 00 00 00";
 const QString MotoUDP::MotoUDP::GET_POS_CMD =   "59 45 52 43 20 00 00 00 03 01 00 02 00 00 00 00 39 39 39 39 39 39 39 39 75 00 65 00 00 01 00 00";
