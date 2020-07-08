@@ -66,7 +66,7 @@ void MainWindow::Read()
     case 16:
         DisplayStatus();
         break;
-    case 06:
+    case 07:
         DisplayPosition();
         break;
     default:
@@ -135,12 +135,12 @@ void MainWindow::DisplayPulse()
         ui->textBrowserR4->setText(QString::number(R));
         ui->textBrowserR5->setText(QString::number(B));
         ui->textBrowserR6->setText(QString::number(T));
-        ui->textBrowserR1_2->setText(QString::number(socket->Pulse2Joint(S,0)));
-        ui->textBrowserR2_2->setText(QString::number(socket->Pulse2Joint(L,1)));
-        ui->textBrowserR3_2->setText(QString::number(socket->Pulse2Joint(U,2)));
-        ui->textBrowserR4_2->setText(QString::number(socket->Pulse2Joint(R,3)));
-        ui->textBrowserR5_2->setText(QString::number(socket->Pulse2Joint(B,4)));
-        ui->textBrowserR6_2->setText(QString::number(socket->Pulse2Joint(T,5)));
+        ui->textBrowserR1_2->setText(QString::number(socket->Pulse2Joint(S)));
+        ui->textBrowserR2_2->setText(QString::number(socket->Pulse2Joint(L)));
+        ui->textBrowserR3_2->setText(QString::number(socket->Pulse2Joint(U)));
+        ui->textBrowserR4_2->setText(QString::number(socket->Pulse2Joint(R)));
+        ui->textBrowserR5_2->setText(QString::number(socket->Pulse2Joint(B)));
+        ui->textBrowserR6_2->setText(QString::number(socket->Pulse2Joint(T)));
 }
 void MainWindow::DisplayStatus()
 {
@@ -243,12 +243,12 @@ void MainWindow::on_pushButtonMOVC_clicked()
     }
     else {
         int32_t speed = ui->textEditV->toPlainText().toDouble(&v)*100;
-        int32_t R1 = socket->Joint2Pulse(ui->textEditR1_2->toPlainText().toDouble(&r1),0);
-        int32_t R2 = socket->Joint2Pulse(ui->textEditR2_2->toPlainText().toDouble(&r2),1);
-        int32_t R3 = socket->Joint2Pulse(ui->textEditR3_2->toPlainText().toDouble(&r3),2);
-        int32_t R4 = socket->Joint2Pulse(ui->textEditR4_2->toPlainText().toDouble(&r4),3);
-        int32_t R5 = socket->Joint2Pulse(ui->textEditR5_2->toPlainText().toDouble(&r5),4);
-        int32_t R6 = socket->Joint2Pulse(ui->textEditR6_2->toPlainText().toDouble(&r6),5);
+        int32_t R1 = socket->Joint2Pulse(ui->textEditR1_2->toPlainText().toDouble(&r1));
+        int32_t R2 = socket->Joint2Pulse(ui->textEditR2_2->toPlainText().toDouble(&r2));
+        int32_t R3 = socket->Joint2Pulse(ui->textEditR3_2->toPlainText().toDouble(&r3));
+        int32_t R4 = socket->Joint2Pulse(ui->textEditR4_2->toPlainText().toDouble(&r4));
+        int32_t R5 = socket->Joint2Pulse(ui->textEditR5_2->toPlainText().toDouble(&r5));
+        int32_t R6 = socket->Joint2Pulse(ui->textEditR6_2->toPlainText().toDouble(&r6));
         if(v&&r1&&r2&&r3&&r4&&r5&&r6)
         {
             start = clock();
@@ -265,27 +265,26 @@ void MainWindow::on_pushButtonMOVC_clicked()
 void MainWindow::on_pushButtonGetStatus_clicked()
 {
     start = clock();
-    //socket->GetRobotStatus();
+    socket->GetRobotStatus();
     ui->textBrowserSentData->setText(socket->tx_data);
 }
 
 void MainWindow::on_pushButtonGetVarPOs_clicked()
 {
     start = clock();
-    socket->GetVarPosition(0x20);
+    socket->GetVarPosition();
 }
 
 void MainWindow::on_pushButtonWriteVarPos_clicked()
 {
     start = clock();
-    socket->WriteVarPosition(0x20,0,232219,-56440,1797957,4179,402722);
+    socket->WriteVarPosition(255692,232219,-56440,1797957,4179,402722);
 }
 
 void MainWindow::on_pushButtonSelectJob_clicked()
 {
     start = clock();
-    char jobname[32] = {'T','E','S','T','T','R','1'};
-    socket->SelectJob(jobname);
+    socket->SelectJob("TESTTR");
 }
 
 
@@ -298,13 +297,11 @@ void MainWindow::on_pushButtonStartJob_clicked()
 void MainWindow::on_pushButtonOUT_clicked()
 {
     start = clock();
-    socket->WriteOutput(1);
-    //socket->OutputON();
+    socket->OutputON();
 }
 
 void MainWindow::on_pushButtonOUT_2_clicked()
 {
     start = clock();
-    socket->WriteOutput(0);
-    //socket->OutputOFF();
+    socket->OutputOFF();
 }
